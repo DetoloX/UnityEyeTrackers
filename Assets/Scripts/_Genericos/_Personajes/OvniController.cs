@@ -116,7 +116,7 @@ public class OvniController : MonoBehaviour {
 		enabledToDestroy = false;
 	}
 
-	public void destroyElement(){
+	public void DestroyElement(){
 
 		gameController.addPoints ();
 		GetComponent<ParticleSystem>().enableEmission= true;
