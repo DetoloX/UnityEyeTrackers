@@ -1,0 +1,14 @@
+<dispositivos>
+	<dispositivo>
+			<serverEyeTribe>C:\Program Files (x86)\EyeTribe\Server\EyeTribe.exe</serverEyeTribe>
+			<calibracionEyeTribe>C:\Program Files (x86)\EyeTribe\Client\EyeTribeUIWin.exe</calibracionEyeTribe>
+	</dispositivo>
+	<dispositivo>
+		<gazeEye>
+			<serverGazeEye>C:\Program Files (x86)\Visual Interaction\myGaze Config Tool\myGaze-Client.exe</serverGazeEye>
+			<calibracionGazeEye>C:\Program Files (x86)\Visual Interaction\myGaze Config Tool\myGaze-Client.exe</calibracionGazeEye>
+		</gazeEye>
+	</dispositivo>
+	<VRPN>F:\VRPN\VRPN_PRUEBA ANADIDO A MOUSE FUNCIONANDO - copia\include\vrpn\pc_win32\server_src\vrpn_server\Release\vrpn_server.exe</VRPN>
+	<Juego>F:\VRPN\Proyecto Eye Tracker\Originales\Ejecutables\eye.exe</Juego>
+</dispositivos>

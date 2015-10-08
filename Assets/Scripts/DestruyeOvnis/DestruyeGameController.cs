@@ -6,6 +6,12 @@ public class DestruyeGameController : MonoBehaviour {
 	public Menu menu;
 	[Header("Puntos para cambiar de nivel")]
 	public int cambioNivel = 10;
+	[Header("Controlador del temporizador")]
+	public CountDownTimer countDownTimer;
+
+
+	[Header("Controlador navegacion menu")]
+	public MoveObject moveObjectController;
 	private bool isNextPhase = false;
 	private int numberLevel = 0;
 	private bool isWaiting = true;
@@ -45,6 +51,8 @@ public class DestruyeGameController : MonoBehaviour {
 
 	}
 
+
+
 	private void ActualizarRecords(){
 		int puntos, monedas;
 		monedas = PlayerPrefs.GetInt ("DestruyeCoins");
@@ -70,6 +78,8 @@ public class DestruyeGameController : MonoBehaviour {
 	private void ReseteaRecords(){
 		coins = 0;
 		points = 0;
+		menu.TextoIzqArriba = "Puntos: \n" + points;
+		menu.TextoDerArriba = "Monedas: \n" + coins;
 	}
 
 	public void IsDie(bool value){
@@ -80,10 +90,15 @@ public class DestruyeGameController : MonoBehaviour {
 			menu.IsDie= true;
 			DeActiveSpawners ();
 			EnabledBird ();
+			ActivarCountDown(false);
+			activarNavegacionOnGame(false);
 			//ActivateBirdSpawner();
 		}else{ 
 			QuitarMenu();
 			ActivateSpawners ();
+			ActivarCountDown(true);
+			ReseteaRecords();
+			activarNavegacionOnGame(true);
 		}
 	}
 
@@ -97,10 +112,19 @@ public class DestruyeGameController : MonoBehaviour {
 		if(isWaiting){
 			menu.IsStart= true;
 			DeActiveSpawners ();
+			ActivarCountDown(false);
+			activarNavegacionOnGame(false);
 		}else{ 
 			QuitarMenu();
 			ActivateSpawners ();
+			ActivarCountDown(true);
+			ReseteaRecords();
+			activarNavegacionOnGame(true);
 		}
+	}
+	private void ActivarCountDown(bool activar){
+		countDownTimer.ReiniciarCountDown ();
+		countDownTimer.isActivado = activar;
 	}
 
 	private void QuitarMenu(){
@@ -119,10 +143,14 @@ public class DestruyeGameController : MonoBehaviour {
 			ActualizarRecords ();
 			menu.IsNextPhase= true;
 			DeActiveSpawners ();
+			ActivarCountDown(false);
+			activarNavegacionOnGame(false);
 		}else{ 
 			QuitarMenu();
 			ActivateSpawners ();
 			oneTime = false;
+			ActivarCountDown(true);
+			activarNavegacionOnGame(true);
 		}
 
 	}
@@ -130,6 +158,7 @@ public class DestruyeGameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		ActualizarRecords ();
+		ActivarCountDown(false);
 	}
 
 
@@ -173,6 +202,10 @@ public class DestruyeGameController : MonoBehaviour {
 	
 	}
 
+	private void activarNavegacionOnGame (bool navega){
+		moveObjectController.navegaEnJuego = navega;
+	}
+
 	public void EliminarTodosObjetos(){
 		GameObject[] gameObjects = GameObject.FindGameObjectsWithTag ("Enemy");
 		foreach (GameObject game in gameObjects) {
@@ -189,7 +222,7 @@ public class DestruyeGameController : MonoBehaviour {
 	}
 
 	private void ActivateBirdSpawner(){
-		GameObject go = go = GameObject.Find("spawnerBird");
+		GameObject go = GameObject.Find("spawnerBird");
 		go.GetComponent<Spawner> ().enabled = false;
 		go.GetComponent<Spawner> ().enabled = true;
 	}

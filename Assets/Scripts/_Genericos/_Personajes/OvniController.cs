@@ -2,9 +2,14 @@
 using System.Collections;
 
 public class OvniController : MonoBehaviour {
+	[Header("Control de sonido")]
+	public AudioClip mySound;
+	public AudioSource mySource;
+	public float myVolume = 1.0f;
 
 	private Animator anim;
 	private bool fixation = false;
+	[Header("--------- ------------")]
 	public float seconds = 3;
 	public float speed = 1.0f; //how fast it shakes
 	public float addTospeed = 1.01f;
@@ -83,6 +88,25 @@ public class OvniController : MonoBehaviour {
 		}
 		
 	}
+
+	private void OnMouseExit(){
+		StopCoroutine ("Countdown");
+		StopAllCoroutines ();
+		fixation = false;
+		firstTime = true;
+		localSpeed = speed;
+
+	}
+	private void OnMouseOver(){
+		if (enabledToDestroy)
+			CuentaAtras ();
+	}
+
+	private void CuentaAtras(){
+		firstTime = false;
+
+		StartCoroutine(Countdown());
+	}
 	private bool firstTime = true;
 	void OnTriggerStay2D (Collider2D other) {
 		//x = uDPReceive.xPos; 
@@ -90,10 +114,8 @@ public class OvniController : MonoBehaviour {
 		//Debug.Log("Entro!");
 		 if (other.tag.ToString() == "Aim" && enabledToDestroy)
 		{	
-			firstTime = false;
 			another = other;
-			StartCoroutine(Countdown());
-			
+			CuentaAtras();
 		}
 		
 	}
@@ -116,7 +138,7 @@ public class OvniController : MonoBehaviour {
 		enabledToDestroy = false;
 	}
 
-	public void DestroyElement(){
+	public void destroyElement(){
 
 		gameController.addPoints ();
 		GetComponent<ParticleSystem>().enableEmission= true;
@@ -124,6 +146,10 @@ public class OvniController : MonoBehaviour {
 		GetComponent<Rigidbody2D>().AddForce(Vector2.up * 110f);
 		GetComponent<Rigidbody2D>().AddForce(Vector2.right * -250f);
 		GetComponent<Rigidbody2D> ().AddTorque (145f);
+
+		// sonido que se le aplica al explotar
+
+		mySource.PlayOneShot( mySound, myVolume );
 		StartCoroutine(DestroyObject());
 
 	//	GetComponent<ParticleSystem> ().startColor = colores;
@@ -133,13 +159,13 @@ public class OvniController : MonoBehaviour {
 
 	IEnumerator DestroyObject()
 	{
-
 		yield return new  WaitForSeconds(3);     //Wait one frame
-		
+
 		AutoDestroy();
 	}
 
 	public void AutoDestroy(){
+
 		Destroy (gameObject);
 	}
 }

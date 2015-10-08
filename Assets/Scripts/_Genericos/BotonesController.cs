@@ -10,7 +10,10 @@ public class BotonesController : MonoBehaviour {
 	public float movimiento = 1f;
 	[Header("Segundos de movimiento")]
 	public float seconds = 3.0f;
-	
+	[Header("Control de sonido")]
+	public AudioClip mySound;
+	public AudioSource mySource;
+	public float myVolume = 1.0f;
 
 	private int signo = -1;
 
@@ -18,17 +21,19 @@ public class BotonesController : MonoBehaviour {
 		vector = this.transform.position;
 	}
 
-
+	// navagacion con el eye tracker
 	void OnTriggerEnter2D(Collider2D collision){
-		vector = this.transform.position;
-		StartCoroutine (MoverObjeto());
+		if (collision.gameObject.tag == "Aim") {
+			vector = this.transform.position;
+			StartCoroutine (MoverObjeto ());
+		}
 	}
 
 	void OnTriggerExit2D(Collider2D collision){
 		StopAllCoroutines ();
 	
 	}
-
+	// navegacion con el raton
 	void OnMouseEnter () {
 		vector = this.transform.position;
 		StartCoroutine (MoverObjeto());
@@ -56,7 +61,7 @@ public class BotonesController : MonoBehaviour {
 			yield return 0;
 		}
 		estaActivo = true;
-
+		mySource.PlayOneShot( mySound, myVolume );
 	}
 	
 }

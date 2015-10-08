@@ -22,6 +22,10 @@ public class CoinController : MonoBehaviour {
 		}
 		
 	}
+	void OnMouseOver(){
+		gameController.addCoin ();
+		GetComponent<Animator>().SetTrigger("isDestroy");
+	}
 
 	public void destroyElement(){
 

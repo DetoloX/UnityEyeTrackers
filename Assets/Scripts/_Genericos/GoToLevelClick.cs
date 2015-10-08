@@ -2,19 +2,32 @@
 using System.Collections;
 
 public class GoToLevelClick : MonoBehaviour {
+
+	public BotonesController botonesController;
 	public int level =0;
 	// Use this for initialization
-	void Start () {
+
+	void OnMouseDown  () {
+		CambiaNivel ();
+	}
 	
-	}
-
-
-	void OnMouseDown () {
-		Application.LoadLevel (level);
-	}
-
-	// Update is called once per frame
 	void Update () {
-	
+		try{
+
+			if (botonesController.EstaActivo) {
+				CambiaNivel();
+				botonesController.EstaActivo = false;
+			}
+		}catch{
+		}
+		
 	}
+	public void CambiaNivel(){
+		try{
+			Application.LoadLevel (level);
+		}catch{
+		}
+
+	}
+
 }

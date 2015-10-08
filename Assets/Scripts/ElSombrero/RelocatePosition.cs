@@ -7,8 +7,8 @@ public class RelocatePosition : MonoBehaviour {
 	public Camera mainCamara;
 	[Space(10)]
 	[Header("Valores de posicion")]
-	public float x = 0;
-	[Tooltip("Valor contando ancho menos esto")]
+	private float x = 0;
+	[Tooltip("Valor contando alto menos esto")]
 	[ContextMenuItem("Reset", "resetTheValue")]
 	public float yOffSet = 50.0f;
 	private float y;
@@ -42,7 +42,7 @@ public class RelocatePosition : MonoBehaviour {
 
 		var renderer = StatusNextPhase.GetComponent<Renderer>();
 		float width = renderer.bounds.size.x;
-		x0 =  (Screen.width / 2)  ;
+		x0 =  (Screen.width / 2);
 		y0 = Screen.height  / 2;
 
 		Vector3 v3Pos = mainCamara.ScreenToViewportPoint(new Vector3((float)x0, (float)y0));
@@ -58,8 +58,8 @@ public class RelocatePosition : MonoBehaviour {
 
 
 	private void ActivaMenu(){
-		Vector2 direction = new Vector2 (x, y).normalized;
-		y = Screen.height - yOffSet;
+
+		y = Screen.height + yOffSet;
 		
 		PosicionImagenMenu ();
 		ActivaInicio ();

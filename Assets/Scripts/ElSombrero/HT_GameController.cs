@@ -12,7 +12,7 @@ public class HT_GameController : MonoBehaviour {
 	[Header("Controlador Menu")]
 	public Menu menu;
 	[Header("Tiempo Spawner")]
-	public float SpawnTime = 0.5f;
+	public float spawnTime = 0.5f;
 	[Header("Escala aumento de los ovnis")]
 	public float prefabsScale= 1.5f;
 	[Header("Objetos")]
@@ -21,6 +21,8 @@ public class HT_GameController : MonoBehaviour {
 	public GameObject[]  caidas;
 	[Header("Controlador aim para deshabilitarlo")]
 	public AimController aimController;
+	[Header("Controlador temporizador")]
+	public CountDownTimerEsquiva countDownTimerEsquiva;
 	private Camera cam;
 	private int numeroPelotas = 0;
 	private static int numeroFallos = 3;
@@ -71,6 +73,7 @@ public class HT_GameController : MonoBehaviour {
 	public void TocoPelota(){
 
 		numeroPelotas++;
+
 		menu.TextoIzqArriba = "Puntos: \n" + numeroPelotas;
 		//menu.TxtDer = "Vidas: /n" + numeroVidas;
 		if (numeroPelotas % numeroAciertos == 0) {
@@ -90,6 +93,7 @@ public class HT_GameController : MonoBehaviour {
 		Vector3 targetWidth = cam.ScreenToViewportPoint(new Vector3(Screen.width, Screen.height,2));
 		float ballWidth = balls[0].GetComponent<Renderer>().bounds.extents.x;
 		maxWidth = targetWidth.x - ballWidth;
+		ActivarCountDown(false);
 	}
 
 	void FixedUpdate () {
@@ -117,11 +121,14 @@ public class HT_GameController : MonoBehaviour {
 
 			menu.IsStart = true;
 			StopAllCoroutines ();
+			ActivarCountDown(false);
 		} else {
 			aimController.Deshabilitarlo();
 			hatController.Habilitarlo();
 			QuitarMenu();
 			StartCoroutine (Spawn ());
+			ReseteaRecords();
+			ActivarCountDown(true);
 		}
 
 	}
@@ -134,9 +141,9 @@ public class HT_GameController : MonoBehaviour {
 
 	public void IsNextPhase (bool activar) {
 
-		SpawnTime -= 0.5f;
-		if (SpawnTime <= 1) {
-			SpawnTime = 1f;
+		spawnTime -= 0.5f;
+		if (spawnTime <= 1) {
+			spawnTime = 1f;
 		}
 
 		if (activar) {
@@ -147,11 +154,13 @@ public class HT_GameController : MonoBehaviour {
 			ActualizarRecords ();
 			menu.IsNextPhase = true;
 			StopAllCoroutines ();
+			ActivarCountDown(false);
 		} else {
 			aimController.Deshabilitarlo();
 			hatController.Habilitarlo();
 			QuitarMenu();
 			StartCoroutine (Spawn ());
+			ActivarCountDown(true);
 		}
 	}
 
@@ -164,23 +173,28 @@ public class HT_GameController : MonoBehaviour {
 			aimController.Habilitarlo();
 			menu.IsDie = true;
 			StopAllCoroutines ();
+			ActivarCountDown(false);
 		} else {
 			aimController.Deshabilitarlo();
 			hatController.Habilitarlo();
 			StartCoroutine (Spawn ());
 			QuitarMenu();
+			ReseteaRecords();
+			ActivarCountDown(true);
 		}
 	}
 
 	public void EliminarTodosObjetos(){
 		GameObject[] gameObjects = GameObject.FindGameObjectsWithTag ("Enemy");
 		foreach (GameObject game in gameObjects) {
-			Destroy(game);
+			if (game.name != "Bomb")
+				Destroy(game);
 		}
 		
 		gameObjects = GameObject.FindGameObjectsWithTag ("Friend");
 		foreach (GameObject game in gameObjects) {
-			Destroy(game);
+			if (game.name != "BowlingBall")
+				Destroy(game);
 		}
 		
 	}
@@ -189,6 +203,8 @@ public class HT_GameController : MonoBehaviour {
 	private void ReseteaRecords(){
 		numeroVidas = numeroFallos;
 		numeroPelotas = 0;
+		menu.TextoDerArriba = "Vidas: \n" + numeroVidas;
+		menu.TextoIzqArriba = "Puntos: \n" + numeroPelotas;
 	}
 
 	private void ActualizarRecords(){
@@ -212,7 +228,7 @@ public class HT_GameController : MonoBehaviour {
 		/*
 		yield return new WaitForSeconds (2.0f);
 		gameOverText.GetComponent<GUIText>().text =  "Nivel " + numeroDeFase;
-		yield return new WaitForSeconds (SpawnTime);*/
+		yield return new WaitForSeconds (spawnTime);*/
 		counting = true;
 
 		while (numeroVidas > 0) {
@@ -230,7 +246,7 @@ public class HT_GameController : MonoBehaviour {
 			Quaternion spawnRotation = Quaternion.identity; // no hay ninguna rotacion
 			GameObject objectIncreaseSize =  Instantiate (ball, spawnPosition, spawnRotation) as GameObject;
 			objectIncreaseSize.transform.localScale = Vector3.one * prefabsScale;
-			yield return new WaitForSeconds (Random.Range (SpawnTime/2, SpawnTime));
+			yield return new WaitForSeconds (Random.Range (spawnTime/2, spawnTime));
 			
 		}
 
@@ -241,4 +257,9 @@ public class HT_GameController : MonoBehaviour {
 		//restartButton.SetActive (true);
 
 	}
+	private void ActivarCountDown(bool activar){
+		countDownTimerEsquiva.ReiniciarCountDown ();
+		countDownTimerEsquiva.isActivado = activar;
+	}
+
 }
